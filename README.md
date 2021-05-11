@@ -6,7 +6,20 @@ Welcome. This is a D3.js visualization of workshop participants and their quotes
 
 Clone or download the files at this github: [Service Space repo] (https://github.com/Stefefina/community)
 
-Using a code editor (Sublime, Atom, etc) open the folder you just copied or cloned. Right click on the "index.html" file and select "open in browser".
+Open Terminal, find the directory/folder where you cloned or downloaded the files.
+Use the following Terminal command to enter the folder
+```cd```
+Then check that you are in the correct directory by typing ```pwd``` in Terminal. This will print the the current directory/folder.
+Making sure that you are in the proper directory, you will now run a server in order to see the visualization. In the Terminal
+type the following ```python -V```
+Here is a good reference in case: https://developer.mozilla.org/en-US/docs/Learn/Common_questions/set_up_a_local_testing_server
+
+If your version of Python is anything starting with a 2.x then in the Terminal type ```python -m SimpleHTTPServer```
+If Python version returned above is 3.X type ```python3 -m http.server```
+
+Open a browser, and in the address bar type, ```localhost:8000```
+
+You should now see the visualization in the browser.
 
 #### How to update participant quotes list
 
