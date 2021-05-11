@@ -1,8 +1,8 @@
-#### Service Space
+## Service Space
 
 Welcome. This is a D3.js visualization of workshop participants and their quotes.
 
-##### How to use:
+### How to use:
 
 Clone or download the files at this github: [Service Space repo] (https://github.com/Stefefina/community)
 
@@ -21,26 +21,30 @@ Open a browser, and in the address bar type, ```localhost:8000```
 
 You should now see the visualization in the browser.
 
-#### How to update participant quotes list
+### How to update participant quotes list
 
 Source for list is here: https://docs.google.com/spreadsheets/d/1IqV7vkQyIiQkLH3LjNUPZ61ceoyslpDrMcD_4tTlEuA/edit?ts=6098f932
 
-1 In the Google Sheets document, all_profiles page, find the participant whose quote you want to use.
+1) In the Google Sheets document, all_profiles page, find the participant whose quote you want to use.
 For that participant click on the checkbox on column "I", chosen quote.
 Then copy and paste the desired quote to the cell on column J.
 Example:
 ![Select participant quote](/documentation/select-quote.jpg "Select quote")
 
 2) Switch to the sheet named participants_filtered.
- Exported participants_filtered as a CSV.
+![Change to participants_filtered sheet](/documentation/switch.jpg "Change to participants_filtered sheet")
+
+3) Exporte participants_filtered as a CSV.
  ![Export quotes](/documentation/export-quotes.jpg "Export quotes")
 
-3) Convert the CSV to a JSON file here: https://csvjson.com/csv2json
-![Convert CSV to JSON](/documentation/csv-to-json.jpg "Convert CSV to JSON")
+4) Convert the CSV to a JSON file here: https://csvjson.com/csv2json
 
 Copy and paste the content of the CSV and click on the "Convert" button.
+![Convert CSV to JSON](/documentation/csv-to-json.jpg "Convert CSV to JSON")
 
-4) Open the file participants.js. It contains an array called "children".
+5) Open the file participants.js. It contains an array called "children".
 Paste the JSON array from step 3 above into this array.
+
+Now, if you save and refresh the changes should be visible.
 
 
