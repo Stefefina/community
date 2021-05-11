@@ -1,0 +1,274 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <!--<title></title> -->
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/contentful@latest/dist/contentful.browser.min.js"></script>
+    
+
+    <style>
+        @import url(https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap);
+
+        body {
+            background-color: #000;
+            font-family: "Open Sans", sans-serif, monaco, monospace;
+            line-height: 160%;
+            font-size: 30px;
+            margin: 0;
+        }
+
+
+        path.link {
+            fill: none;
+            stroke-width: 0.2px;
+        }
+
+        .node:not(:hover) .nodetext {
+            display: none;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin: 20px 0;
+            text-transform: uppercase;
+            font-weight: normal;
+        }
+
+        h2, h3 {
+            font-size: 30px;
+            margin: 5px 0;
+            font-weight: normal;
+        }
+
+        header {
+            color: #fff;
+            padding: 50px;
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            width: 500px;
+        }
+
+        a:link {
+            color: #EE3124;
+            text-decoration: none;
+        }
+
+        a:visited {
+            color: #fff;
+        }
+
+        a:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        a:active {
+            color: #fff;
+        }
+
+        circle {
+            fill: none;
+            stroke-width: 1px;
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <header>
+        <h1>Service space</h1>
+        <h3></h3>
+        <div id="image-container"></div>
+    </header>
+    <!-- container for force layout visualisation  -->
+        <section id="vis"></section>
+        <script>
+            // This code adapted from Mike Bostock and Sundar Singh
+
+            var tcBlack = "#fff";
+
+            // rest of vars
+            let w = 2000,
+                h = 1600,
+                maxNodeSize = 50,
+                x_browser = 20,
+                y_browser = 25,
+                root;
+
+            let vis;
+            let force = d3.layout.force();
+
+            vis = d3.select("#vis").append("svg").attr("width", w).attr("height", h);
+
+            d3.json("participants.json", function (json) {
+
+                root = json;
+                root.fixed = true;
+                root.x = w / 2;
+                root.y = h / 4;
+
+                update();
+            });
+
+            function update() {
+
+                let nodes = flatten(root),
+                // let nodes = root,
+
+                    links = d3.layout.tree().links(nodes);
+
+                // Restart the force layout.
+                force.nodes(nodes)
+                    .links(links)
+                    .gravity(0.02)
+                    .charge(-2000)
+                    .linkDistance(200)
+                    .friction(0.3)
+                    .linkStrength(function (l, i) { return 1; })
+                    .size([w, h])
+                    .on("tick", tick)
+                    .start();
+                console.log("nodes", nodes)
+                let path = vis.selectAll("path.link").data(links, function (d) {
+                    return d.target.id; });
+
+                path.enter().insert("svg:path")
+                    .attr("class", "link")
+                    .attr("marker-end", "url(#end)")
+                    .style("stroke", "#fff");
+
+
+                // Exit any old paths.
+                path.exit().remove();
+
+                // Update the nodes…
+                let node = vis.selectAll("g.node")
+                    .data(nodes, function (d) { return d.id; });
+
+
+                // Enter any new nodes.
+                let nodeEnter = node.enter().append("svg:g")
+                    .attr("class", "node")
+                    .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
+                    // .on("click", click)
+                    .call(force.drag);
+
+                // Append a circle
+                nodeEnter.append("svg:circle")
+                    .attr("r", function (d) { return Math.sqrt(4000) / 10 || 4.5; })
+                    .style("fill", "#fff");
+
+                // Append images
+                let images = nodeEnter.append("svg:image")
+                    .attr("xlink:href", function (d) { return d.img; })
+                    .attr("x", function (d) { return -25; })
+                    .attr("y", function (d) { return -25; })
+                    .attr("height", 50)
+                    .attr("width", 50);
+
+                // make the image grow a little on mouse over and add the text details on click
+                let setEvents = images
+                    // Append hero text
+                    .on('click', function (d) {
+                        d3.select("h1").html(d.name);
+                        d3.select("h2").html(d.quote);
+                        d3.select("h3").html(d.quote);
+                        d3.select("#image-container").html(`<img height="500" src="${d.img}">`)
+                            .attr("x", function (d) { return 0; })
+                            .attr("y", function (d) { return 0; })
+                            // .attr("height", 600)
+                            // .attr("width", 600);
+
+                    })
+
+                    // .on('mouseenter', function () {
+                    //     // select element in current context
+                    //     d3.select("img")
+                    //         .transition()
+                    //         .attr("x", function (d) { return -60; })
+                    //         .attr("y", function (d) { return -60; })
+                    //         .attr("height", 400)
+                    //         .attr("width", 400);
+                    // })
+                    // set back
+                    // .on('mouseleave', function () {
+                    //     d3.select(this)
+                    //         .transition()
+                    //         .attr("x", function (d) { return -25; })
+                    //         .attr("y", function (d) { return -25; })
+                    //         .attr("height", 50)
+                    //         .attr("width", 50);
+                    // });
+
+                // Append hero quote on roll over next to the node as well
+                //nodeEnter.append("text")
+                  //  .attr("class", "nodetext")
+                   // .attr("x", x_browser)
+                  //  .attr("y", y_browser + 15)
+                  //  .attr("fill", tcBlack)
+                  //  .text(function (d) { return d.name; });
+
+
+                // Exit any old nodes.
+                node.exit().remove();
+
+
+                // Re-select for update.
+                path = vis.selectAll("path.link");
+                node = vis.selectAll("g.node");
+
+                function tick() {
+
+
+                    path.attr("d", function (d) {
+
+                        let dx = d.target.x - d.source.x,
+                            dy = d.target.y - d.source.y,
+                            dr = Math.sqrt(dx * dx + dy * dy);
+                        return "M" + d.source.x + ","
+                            + d.source.y
+                            + "A" + dr + ","
+                            + dr + " 0 0,1 "
+                            + d.target.x + ","
+                            + d.target.y;
+                    });
+                    node.attr("transform", nodeTransform);
+                }
+            }
+
+
+            /**
+             * Gives the coordinates of the border for keeping the nodes inside a frame
+             * http://bl.ocks.org/mbostock/1129492
+             */
+            function nodeTransform(d) {
+                d.x = Math.max(maxNodeSize, Math.min(w - (d.imgwidth / 2 || 16), d.x));
+                d.y = Math.max(maxNodeSize, Math.min(h - (d.imgheight / 2 || 16), d.y));
+                return "translate(" + d.x + "," + d.y + ")";
+            }
+
+            /**
+             * Returns a list of all nodes under the root.
+             */
+            function flatten(node) {
+                let nodes = [];
+                let i = 0;
+                function recurse(node) {
+                    if (node.children) node.children.forEach(recurse);
+                    if (!node.id) node.id = ++i;
+                    nodes.push(node);
+                }
+
+                recurse(root);
+
+                return nodes;
+
+            }
+        </script>
+
+</body>
+</html>
