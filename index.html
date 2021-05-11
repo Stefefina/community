@@ -3,16 +3,21 @@
 <head>
     <meta charset="utf-8">
     <!--<title></title> -->
+    <script src="participants.js"></script>
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/contentful@latest/dist/contentful.browser.min.js"></script>
     
 
     <style>
+        :root {
+            --main-color: white;
+            --opposite-color: #000;
+        }
         @import url(https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap);
 
         body {
-            background-color: #000;
+            background-color: var(--main-color);
             font-family: "Open Sans", sans-serif, monaco, monospace;
             line-height: 160%;
             font-size: 30px;
@@ -43,7 +48,7 @@
         }
 
         header {
-            color: #fff;
+            color: #000;
             padding: 50px;
             position: absolute;
             top: 30px;
@@ -88,7 +93,6 @@
         <section id="vis"></section>
         <script>
             // This code adapted from Mike Bostock and Sundar Singh
-
             let tcBlack = "#fff";
 
             // rest of vars
@@ -104,45 +108,57 @@
 
             vis = d3.select("#vis").append("svg").attr("width", w).attr("height", h);
 
-            d3.json("participants.json", function (json) {
+            console.log("got data", participants);
 
-                root = json;
+            if(participants) loadData(participants);
+
+            // d3.json("participants.json", function (json) {
+            //
+            //     root = json;
+            //     root.fixed = true;
+            //     root.x = w / 2;
+            //     root.y = h / 4;
+            //
+            //     let nodes = flatten(root);
+            //     console.log("participants json", nodes)
+            //     update(nodes);
+            // });
+
+            function loadData(data) {
+                root = data;
                 root.fixed = true;
                 root.x = w / 2;
                 root.y = h / 4;
 
                 let nodes = flatten(root);
-                console.log("json", nodes)
                 update(nodes);
-            });
+            }
 
 
-            // d3.csv("participants.csv", function (data) {
+            // d3.csv("participants.csv", function (participants) {
+            //     let obj = {}
             //     let csvEntryArr = [];
-            //     data.forEach(function (entry, index) {
+            //     participants.forEach(function (entry, index) {
             //
             //         if(!entry["id"]) entry.id = index + 1;
             //         // console.log("entry.fields w id", entry.fields)
             //         csvEntryArr.push(entry);
             //
             //     })
-            //
-            //     root = csvEntryArr;
+            //     // obj['children'] = csvEntryArr;
+            //     root = participants;
             //     root.fixed = true;
             //     root.x = w / 2;
             //     root.y = h / 4;
             //     let nodes = flatten(root);
-            //     console.log("csv", root);
+            //     console.log("csv", csvEntryArr);
             //     update(root);
             // });
 
 
             function update(nodes) {
 
-
-                // let nodes = root,
-
-                    links = d3.layout.tree().links(nodes);
+                links = d3.layout.tree().links(nodes);
 
                 // Restart the force layout.
                 force.nodes(nodes)
@@ -155,14 +171,14 @@
                     .size([w, h])
                     .on("tick", tick)
                     .start();
-                console.log("pdate nodes", nodes)
+
                 let path = vis.selectAll("path.link").data(links, function (d) {
                     return d.target.id; });
 
                 path.enter().insert("svg:path")
                     .attr("class", "link")
                     .attr("marker-end", "url(#end)")
-                    .style("stroke", "#fff");
+                    .style("stroke", "#000");
 
 
                 // Exit any old paths.
@@ -206,34 +222,7 @@
                             // .attr("height", 600)
                             // .attr("width", 600);
 
-                    })
-
-                    // .on('mouseenter', function () {
-                    //     // select element in current context
-                    //     d3.select("img")
-                    //         .transition()
-                    //         .attr("x", function (d) { return -60; })
-                    //         .attr("y", function (d) { return -60; })
-                    //         .attr("height", 400)
-                    //         .attr("width", 400);
-                    // })
-                    // set back
-                    // .on('mouseleave', function () {
-                    //     d3.select(this)
-                    //         .transition()
-                    //         .attr("x", function (d) { return -25; })
-                    //         .attr("y", function (d) { return -25; })
-                    //         .attr("height", 50)
-                    //         .attr("width", 50);
-                    // });
-
-                // Append hero quote on roll over next to the node as well
-                //nodeEnter.append("text")
-                  //  .attr("class", "nodetext")
-                   // .attr("x", x_browser)
-                  //  .attr("y", y_browser + 15)
-                  //  .attr("fill", tcBlack)
-                  //  .text(function (d) { return d.name; });
+                    });
 
 
                 // Exit any old nodes.
@@ -287,7 +276,7 @@
                 }
 
                 recurse(root);
-                console.log("nodes", nodes)
+                // console.log("nodes", nodes)
                 return nodes;
 
             }
