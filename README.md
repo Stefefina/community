@@ -40,7 +40,7 @@ Example:
 
 Copy and paste the content of the CSV and click on the "Convert" button.
 
-4) Open the file participants.json, you will notice that this file is a JSON file. It contains an array called "children".
-Paste the JSON array from step 3 above into this file.
+4) Open the file participants.js. It contains an array called "children".
+Paste the JSON array from step 3 above into this array.
 
 
