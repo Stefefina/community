@@ -80,7 +80,7 @@
 <body>
 
     <header>
-        <h1>Service space</h1>
+        <h1></h1>
         <h3></h3>
         <div id="image-container"></div>
     </header>
@@ -89,7 +89,7 @@
         <script>
             // This code adapted from Mike Bostock and Sundar Singh
 
-            var tcBlack = "#fff";
+            let tcBlack = "#fff";
 
             // rest of vars
             let w = 2000,
@@ -111,12 +111,35 @@
                 root.x = w / 2;
                 root.y = h / 4;
 
-                update();
+                let nodes = flatten(root);
+                console.log("json", nodes)
+                update(nodes);
             });
 
-            function update() {
 
-                let nodes = flatten(root),
+            // d3.csv("participants.csv", function (data) {
+            //     let csvEntryArr = [];
+            //     data.forEach(function (entry, index) {
+            //
+            //         if(!entry["id"]) entry.id = index + 1;
+            //         // console.log("entry.fields w id", entry.fields)
+            //         csvEntryArr.push(entry);
+            //
+            //     })
+            //
+            //     root = csvEntryArr;
+            //     root.fixed = true;
+            //     root.x = w / 2;
+            //     root.y = h / 4;
+            //     let nodes = flatten(root);
+            //     console.log("csv", root);
+            //     update(root);
+            // });
+
+
+            function update(nodes) {
+
+
                 // let nodes = root,
 
                     links = d3.layout.tree().links(nodes);
@@ -132,7 +155,7 @@
                     .size([w, h])
                     .on("tick", tick)
                     .start();
-                console.log("nodes", nodes)
+                console.log("pdate nodes", nodes)
                 let path = vis.selectAll("path.link").data(links, function (d) {
                     return d.target.id; });
 
@@ -264,7 +287,7 @@
                 }
 
                 recurse(root);
-
+                console.log("nodes", nodes)
                 return nodes;
 
             }
