@@ -215,7 +215,7 @@
                         d3.select("h1").html(d.name);
                         d3.select("h2").html(d.quote);
                         d3.select("h3").html(d.quote);
-                        if(d.img != null) d3.select("#image-container").html(`<img height="500" src="${d.img}">`)
+                        d3.select("#image-container").html(`<img height="500" src="${d.img}">`)
                             .attr("x", function (d) { return 0; })
                             .attr("y", function (d) { return 0; })
                             // .attr("height", 600)
