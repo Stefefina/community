@@ -1,4 +1,5 @@
 let participants =  {
+    img: null,
     children:[
         {
             "name": "Joshua L (Lincoln, NE)",
